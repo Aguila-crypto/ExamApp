@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+
+ frontend:
+    build:
+    dockerfile : frontend/Dockerfile
+    container_name: frontendContainer
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+
+    networks:
+      - examenInternal  
+
+
+ backend:
+    build:
+    contex: ./backend
+    dockerfile: Dockerfile
+    container_name: backendContaine
+    ports:
+      - "33060:3306"
+    depends_on:
+      - mysql
+
+    networks:
+      - examenInternal
+
+ mysql:
+    build:
+    context: ./mysql
+    dockerfile: database/Dockerfile
+    container_name: databaseContainer
+    environment:
+      - MYSQL_DATABASE: schema
+        MYSQL_USER: root
+        MYSQL_PASSWORD : 'root'
+    ports:
+      - "33060:3306"    
+    volumes:
+      - databaseVolume:/var/lib/mysql
+    networks:
+      - examenInternal
+
+
+  
+
+volumes:
+  mysql_data:
+
+networks:
+  examenInternal:
